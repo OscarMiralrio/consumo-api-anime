@@ -1,11 +1,9 @@
 package com.aluracursos.apianime.principal;
 
 import com.aluracursos.apianime.modelos.Anime;
-import com.aluracursos.apianime.modelos.DataAnimesPages;
 import com.aluracursos.apianime.modelos.DatosAnimes;
 import com.aluracursos.apianime.service.ConsumoAPI;
 import com.aluracursos.apianime.service.ConvierteDatos;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
