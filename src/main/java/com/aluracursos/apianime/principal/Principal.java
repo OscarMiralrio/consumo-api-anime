@@ -21,6 +21,8 @@ public class Principal {
 
         List<Anime> animeList = obtieneAnimesList(obtieneDatosAnimes(URL_BASE+URL_PAGINATION));
 
+        animeList.stream().forEach(System.out::println);
+
         System.out.println("====================================================");
         //TOP 10 ANIMER MEJOR RANKEADOS DE LA LISTA OBTENIDA
         System.out.println("TOP 10 ANIMES MEJOR RANKEADOS");
@@ -28,6 +30,8 @@ public class Principal {
 
         System.out.println("====================================================");
         busquedaDeAnimePorNombre(animeList);
+        System.out.println("====================================================");
+        estaidisticasScoreAndRank(animeList);
 
     }
 
@@ -68,7 +72,37 @@ public class Principal {
         System.out.println("====================================================");
         System.out.println("Animes encontrados que conicidesn con :: " +pedazoTitulo);
         System.out.println("====================================================");
-        animeBuscado.stream().forEach( a -> System.out.println("Anime :: " +a.title()));
+        if(animeBuscado.isEmpty()){
+            System.out.println("ANIME NO ENCONTRADO :C");
+        } else {
+            animeBuscado.stream().forEach(a -> System.out.println("Anime :: " + a.title()));
+        }
+
+    }
+
+    public void estaidisticasScoreAndRank(List<Anime> animeList){
+
+        DoubleSummaryStatistics estScore = animeList.stream()
+                .filter( a -> a.score() > 0.0)
+                .collect(Collectors.summarizingDouble(Anime::score));
+
+        System.out.println(
+                "Estadisticas Basicas del >> Score << de los animes obtenidos " +
+                        "\n\t+ Score mas alto :: " + estScore.getMax() +
+                        "\n\t+ Score mas bajo :: " + estScore.getMin() +
+                        "\n\t+ Media del Score :: " + estScore.getAverage() +"\n"
+        );
+
+        IntSummaryStatistics estRank = animeList.stream()
+                .filter( a -> a.rank() != null && a.rank() > 0)
+                .collect(Collectors.summarizingInt(Anime::rank));
+
+        System.out.println(
+                "Estadisticas Basicas del >> Rank << de los animes obtenidos " +
+                        "\n\t+ Rank mas alto :: " + estRank.getMax() +
+                        "\n\t+ Rank mas bajo :: " + estRank.getMin() +
+                        "\n\t+ Media del Rank :: " + estRank.getAverage() +"\n"
+        );
 
     }
 
