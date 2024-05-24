@@ -5,15 +5,13 @@ import com.aluracursos.apianime.modelos.DatosAnimes;
 import com.aluracursos.apianime.service.ConsumoAPI;
 import com.aluracursos.apianime.service.ConvierteDatos;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
 
-
+    private final Scanner teclado = new Scanner(System.in);
     private final ConsumoAPI consumoAPI = new ConsumoAPI();
-
     private final ConvierteDatos convierteDatos = new ConvierteDatos();
 
     private final String URL_BASE = "https://api.jikan.moe/v4/anime";
@@ -21,9 +19,15 @@ public class Principal {
 
     public void muestraDatos(){
 
-        obtieneAnimesList(obtieneDatosAnimes(URL_BASE+URL_PAGINATION))
-                .stream()
-                .forEach(System.out::println);
+        List<Anime> animeList = obtieneAnimesList(obtieneDatosAnimes(URL_BASE+URL_PAGINATION));
+
+        System.out.println("====================================================");
+        //TOP 10 ANIMER MEJOR RANKEADOS DE LA LISTA OBTENIDA
+        System.out.println("TOP 10 ANIMES MEJOR RANKEADOS");
+        animesMejorRankeados(animeList);
+
+        System.out.println("====================================================");
+        busquedaDeAnimePorNombre(animeList);
 
     }
 
@@ -42,6 +46,30 @@ public class Principal {
         return datosAnimes.stream()
                 .flatMap( a -> a.data().stream())
                 .collect(Collectors.toList());
+    }
+
+    private void animesMejorRankeados(List<Anime> animeList){
+        animeList.stream()
+                .filter( a -> a.rank() != null)
+                .sorted(Comparator.comparing(Anime::rank).reversed())
+                .limit(10)
+                .forEach( a -> System.out.println(" Anime :: " + a.title() + " Rank :: " + a.rank()));
+    }
+
+    private void busquedaDeAnimePorNombre(List<Anime> animeList){
+         //Busca episodio por pedazo de titulo
+        System.out.println("Por favor escriba el titulo del Anime que desea ver");
+        var pedazoTitulo = teclado.nextLine();
+
+        List<Anime> animeBuscado = animeList.stream()
+                .filter(e -> e.title().toUpperCase().contains(pedazoTitulo.toUpperCase()))
+                .collect(Collectors.toList());
+
+        System.out.println("====================================================");
+        System.out.println("Animes encontrados que conicidesn con :: " +pedazoTitulo);
+        System.out.println("====================================================");
+        animeBuscado.stream().forEach( a -> System.out.println("Anime :: " +a.title()));
+
     }
 
 
